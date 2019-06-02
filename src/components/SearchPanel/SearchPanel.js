@@ -16,7 +16,6 @@ class SearchPanel extends Component {
   	}
 
 	render () {
-		const {onChangeSearch} = this.props;
 		const searchText = 'Type here to search';
 		return (
 				<input 

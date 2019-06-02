@@ -20,7 +20,8 @@ class App extends Component {
 				{label: 'Make Awesome App', important: true, id: 2},
 				{label: 'Have a lunch', important: false, id: 3},*/
 			],
-			term: ''
+			term: '',
+			filter: 'all' // active , all , done
 		}
 	}
 
@@ -112,7 +113,7 @@ class App extends Component {
 			return arr
 		} else {
 			 return arr.filter((el) => {
-				return el.label.indexOf(term) > -1;
+				return el.label.toLowerCase().indexOf(term.toLowerCase()) > -1;
 			});
 		}
 	}
@@ -120,41 +121,24 @@ class App extends Component {
 		this.setState({ term });
 	};
 
-	onClickAll = () => {
-		this.setState(({todoData}) => {
-			const newArray = [...todoData];
-			return {
-				todoData: newArray
-			}
-		});
-	};
-
-	onClickActive = () => {
-		this.setState(({todoData}) => {
-			const newArray = todoData.filter((el, index, arr) => {
+	filter (arr, filter) { 
+		switch (filter) {
+			case 'all': return arr;
+			case 'active': return arr.filter((el, index, arr) => {
 				return el.done === false;
-			})
-			return {
-			todoData: newArray
-		}
-		});
-	};
-
-	onClickDone = () => {
-		this.setState(({todoData}) => {
-			const newArray = todoData.filter((el, index, arr) => {
-				return el.done === true;
-			})
-			return {
-			todoData: newArray
-		}
-		});
-	};
+			});
+			case 'done': return arr.filter((el, index, arr) => {
+				return el.done;
+			});		}
+	}
+	onFilterChange = (filter) => {
+		this.setState({filter});
+	}
 
 	
 	render () {
-		const {todoData, term} = this.state;
-		const visibleItem = this.search(todoData, term)
+		const {todoData, term, filter} = this.state;
+		const visibleItem = this.filter(this.search(todoData, term), filter);
 		const doneCount = todoData.filter((el)=> el.done).length; //создаёт новый массив, 
 		//в который войдут только те элементы el массива  todoData, для которых вызов callback(el, i, arr) возвратит true.
 		//и получаем длину этого массива 
@@ -168,11 +152,10 @@ class App extends Component {
 					<Searchpanel onSearchChange = {this.onSearchChange} />
 
 
-					<ItemStatusFilter
-					onClickAll = {this.onClickAll}
-					onClickActive = {this.onClickActive}
-					onClickDone = {this.onClickDone}
-					/>
+					<ItemStatusFilter 
+						filter = {filter} 
+						onFilterChange={this.onFilterChange}/>
+				
 				</div>
 
 				<TodoList todos = {visibleItem}
