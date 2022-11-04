@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "gh-pages": "^2.0.1",
-    "tslint": "^3.0.0"
+    "tslint": "^3.15.1"
   }
 }
